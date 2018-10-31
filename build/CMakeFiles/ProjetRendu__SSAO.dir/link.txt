@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -g -Wall   CMakeFiles/ProjetRendu__SSAO.dir/src/ProjetRendu/SSAO/SSAO.cpp.o  -o bin/ProjetRendu/ProjetRendu__SSAO  -L/home/bkovac/Documents/ProjetRendu/lib -rdynamic -lglfw -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor -lGL -ldl -lpthread -lassimp libSTB_IMAGE.a libGLAD.a -Wl,-rpath,/home/bkovac/Documents/ProjetRendu/lib  -ldl
