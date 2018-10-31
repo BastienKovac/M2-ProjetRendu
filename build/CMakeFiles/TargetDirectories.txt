@@ -1,5 +1,0 @@
-/home/bkovac/Documents/ProjetRendu/build/CMakeFiles/edit_cache.dir
-/home/bkovac/Documents/ProjetRendu/build/CMakeFiles/GLAD.dir
-/home/bkovac/Documents/ProjetRendu/build/CMakeFiles/ProjetRendu__SSAO.dir
-/home/bkovac/Documents/ProjetRendu/build/CMakeFiles/STB_IMAGE.dir
-/home/bkovac/Documents/ProjetRendu/build/CMakeFiles/rebuild_cache.dir
