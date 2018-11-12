@@ -45,5 +45,7 @@ void main()
     lighting += diffuse + specular;
 
     FragColor = vec4(vec3(AmbientOcclusion), 1);
+    
+    // FragColor = vec4(lighting, 1);
 }
 

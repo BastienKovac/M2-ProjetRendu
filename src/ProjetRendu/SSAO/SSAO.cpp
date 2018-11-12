@@ -89,8 +89,7 @@ int main()
     Shader shaderGeometryPass("ssao_geometry.vs", "ssao_geometry.fs");
     Shader shaderLightingPass("ssao.vs", "ssao_lighting.fs");
     Shader shaderSSAO("ssao.vs", "ssao.fs");
-    Shader shaderSSAOBlurH("ssao.vs", "ssao_blur_h.fs");
-    Shader shaderSSAOBlurV("ssao.vs", "ssao_blur_v.fs");
+    Shader shaderSSAOBlur("ssao.vs", "ssao_blur.fs");
 
     // load models
     // -----------
@@ -216,10 +215,11 @@ int main()
     shaderSSAO.setInt("gPosition", 0);
     shaderSSAO.setInt("gNormal", 1);
     shaderSSAO.setInt("texNoise", 2);
-    shaderSSAOBlurH.use();
-    shaderSSAOBlurH.setInt("ssaoInput", 0);
-    shaderSSAOBlurV.use();
-    shaderSSAOBlurV.setInt("ssaoInput", 0);
+    
+    shaderSSAOBlur.use();
+    shaderSSAOBlur.setInt("ssaoInput", 0);
+    shaderSSAOBlur.setInt("width", SCR_WIDTH);
+    shaderSSAOBlur.setInt("height", SCR_HEIGHT);
 
     // render loop
     // -----------
@@ -269,7 +269,6 @@ int main()
 
 
         // 2. generate SSAO texture
-        // ------------------------
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
         glClear(GL_COLOR_BUFFER_BIT);
         shaderSSAO.use();
@@ -288,28 +287,15 @@ int main()
 
 
         // 3. blur SSAO texture to remove noise
-        // ------------------------------------
-        
-        // Horizontal Pass
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
         glClear(GL_COLOR_BUFFER_BIT);
-        shaderSSAOBlurH.use();
+        shaderSSAOBlur.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
         renderQuad();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
-        // Vertical Pass
-        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
-        glClear(GL_COLOR_BUFFER_BIT);
-        shaderSSAOBlurV.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
-        renderQuad();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 4. lighting pass: traditional deferred Blinn-Phong lighting with added screen-space ambient occlusion
-        // -----------------------------------------------------------------------------------------------------
+        // 4. lighting pass: traditional deferred Blinn-Phong lighting with added screen-space ambient occlusion        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shaderLightingPass.use();
         // send light relevant uniforms
