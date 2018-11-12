@@ -89,7 +89,8 @@ int main()
     Shader shaderGeometryPass("ssao_geometry.vs", "ssao_geometry.fs");
     Shader shaderLightingPass("ssao.vs", "ssao_lighting.fs");
     Shader shaderSSAO("ssao.vs", "ssao.fs");
-    Shader shaderSSAOBlur("ssao.vs", "ssao_blur.fs");
+    Shader shaderSSAOBlurH("ssao.vs", "ssao_blur_h.fs");
+    Shader shaderSSAOBlurV("ssao.vs", "ssao_blur_v.fs");
 
     // load models
     // -----------
@@ -215,8 +216,10 @@ int main()
     shaderSSAO.setInt("gPosition", 0);
     shaderSSAO.setInt("gNormal", 1);
     shaderSSAO.setInt("texNoise", 2);
-    shaderSSAOBlur.use();
-    shaderSSAOBlur.setInt("ssaoInput", 0);
+    shaderSSAOBlurH.use();
+    shaderSSAOBlurH.setInt("ssaoInput", 0);
+    shaderSSAOBlurV.use();
+    shaderSSAOBlurV.setInt("ssaoInput", 0);
 
     // render loop
     // -----------
@@ -286,14 +289,24 @@ int main()
 
         // 3. blur SSAO texture to remove noise
         // ------------------------------------
+        
+        // Horizontal Pass
         glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
         glClear(GL_COLOR_BUFFER_BIT);
-        shaderSSAOBlur.use();
+        shaderSSAOBlurH.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
         renderQuad();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        
+        // Vertical Pass
+        glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+        glClear(GL_COLOR_BUFFER_BIT);
+        shaderSSAOBlurV.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+        renderQuad();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // 4. lighting pass: traditional deferred Blinn-Phong lighting with added screen-space ambient occlusion
         // -----------------------------------------------------------------------------------------------------
